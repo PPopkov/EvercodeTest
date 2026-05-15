@@ -15,6 +15,9 @@ function createLogger(appName) {
     debug: (message) => {
       console.log(`[DEBUG] [${appName}] ${message} ${getTimestamp()}`);
     },
+    trace:(message) => {
+      console.log(`[TRACE] [${appName}] ${message} ${getTimestamp()}`);
+    },
   };
 }
 
