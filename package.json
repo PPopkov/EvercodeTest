@@ -4,9 +4,13 @@
   "description": "Career program project",
   "main": "scheduler.js",
   "scripts": {
-    "start": "node scheduler.js"
+    "start": "node scheduler.js",
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^30.4.2"
+  }
 }
