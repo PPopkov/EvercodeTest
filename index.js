@@ -1,6 +1,11 @@
+require('dotenv').config();
 const { scheduleTask } = require("./src/scheduler");
 const { log } = require("./src/logger");
 const app  = require("./src/app");
+const port = 3000;
+
+
+
 
 scheduleTask("Timer", 1000, () => {
   log.info("running");
@@ -12,6 +17,6 @@ try {
   log.error(`${error.name}: ${error.message}`);
 }
 
-app.listen(3000, () => {
-  log.info("Server search on port 3000");
+app.listen(port, () => {
+  log.info(`Server search on port: ${port} `);
 });
