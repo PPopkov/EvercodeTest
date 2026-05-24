@@ -3,7 +3,30 @@ const router = express.Router();
 const currencyService = require("../services/currencyService");
 const binanceService = require("../services/binanceService");
 
-router.get("/",async (req, res) => {
+/**
+ * @openapi
+ * /price:
+ *   get:
+ *     summary: Get all prices by ticker
+ *     tags:
+ *       - Currency by ticker
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: currency
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: BTC
+ *     responses:
+ *       200:
+ *         description: List of currencies
+ *       403:
+ *         description: Access denied
+ */
+
+router.get("/", async (req, res) => {
   try {
     const ticker = req.query.currency;
     currencyService.getByTicker(ticker);
@@ -14,4 +37,4 @@ router.get("/",async (req, res) => {
   }
 });
 
-module.exports = router
+module.exports = router;
