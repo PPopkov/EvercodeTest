@@ -26,6 +26,5 @@ const options = {
 };
 
 const spec = swaggerJsdoc(options);
-console.log(path.join(__dirname, "../routes/*.js"));
-console.log(JSON.stringify(spec, null, 2));
+
 module.exports = spec;
