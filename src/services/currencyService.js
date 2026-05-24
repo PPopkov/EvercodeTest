@@ -41,4 +41,9 @@ const remove = (id) => {
   return true;
 };
 
-module.exports = { getAll, getById, create, update, remove };
+const reset = () => {
+  currencies.length = 0;
+  nextId = 1;
+}
+
+module.exports = { getAll, getById, create, update, remove, reset };
