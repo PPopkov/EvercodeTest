@@ -14,6 +14,12 @@ const getById = (id) => {
   return currency;
 };
 
+const getByTicker = (ticker) => {
+  const currency = currencies.find(c => c.ticker === ticker);
+  if (!currency) throw new NotFoundError('Валюта не найдена');
+  return currency;
+};
+
 const create = (name, ticker) => {
   if (!name || !ticker)
     throw new ValidationError("The name and ticker fields are required");
@@ -46,4 +52,4 @@ const reset = () => {
   nextId = 1;
 }
 
-module.exports = { getAll, getById, create, update, remove, reset };
+module.exports = { getAll, getById, create, update, remove, reset, getByTicker };
