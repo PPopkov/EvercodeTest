@@ -1,7 +1,7 @@
 const axios = require("axios");
 const { ExternalServiceError } = require("../errors/ExternalServiceError");
 
-const getByTicker = async (ticker) => {
+const getByTicker = async (ticker, retries = 3) => {
   try {
     const response = await axios.get(
       `https://api.binance.com/api/v3/ticker/price`
@@ -12,6 +12,9 @@ const getByTicker = async (ticker) => {
       .sort((a, b) => Number(b.price) - Number(a.price));
     return filtredPrice;
   } catch (error) {
+    if (retries > 0) {
+      return getByTicker(ticker, retries - 1);
+    }
     if (error.response) {
       throw new ExternalServiceError(`Binance error: ${error.response.status}`);
     }
@@ -19,4 +22,4 @@ const getByTicker = async (ticker) => {
   }
 };
 
-module.exports = {getByTicker};
+module.exports = { getByTicker };
