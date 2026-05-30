@@ -1,25 +1,26 @@
 const express = require("express");
-const app = express();
 
 const swaggerUiExpress = require("swagger-ui-express");
 const spec = require("./config/swagger");
 
-const authMiddleware = require("./middleware/auth");
-
-const { createCurrencyService } = require("./services/currencyService");
-const binanceService = require("./services/binanceService");
-const currencyService = createCurrencyService()
+const authMiddleware = require("../src/middleware/auth");
 const statusRoute = require("./routes/status");
 
-const {createCurrencyRouter} = require("./routes/currency");
-const {createPriceRouter} = require("./routes/price");
+const { createCurrencyRouter } = require("./routes/currency");
+const { createPriceRouter } = require("./routes/price");
 
-app.use(express.json());
-app.use("/docs", swaggerUiExpress.serve, swaggerUiExpress.setup(spec));
+function createApp(currencyService, binanceService) {
+  const app = express();
 
-app.use(authMiddleware);
-app.use("/currency", createCurrencyRouter(currencyService));
-app.use("/price", createPriceRouter(currencyService, binanceService))
-app.use("/status", statusRoute);
+  app.use(express.json());
+  app.use("/docs", swaggerUiExpress.serve, swaggerUiExpress.setup(spec));
 
-module.exports = app;
+  app.use(authMiddleware);
+  app.use("/currency", createCurrencyRouter(currencyService));
+  app.use("/price", createPriceRouter(currencyService, binanceService));
+  app.use("/status", statusRoute);
+
+  return app;
+}
+
+module.exports = { createApp };
