@@ -1,4 +1,4 @@
-const config = require("../config");
+const config = require("../../config");
 
 const authMiddleware = (req, res, next) => {
   const authHeader = req.headers.authorization;
