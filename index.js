@@ -1,9 +1,8 @@
-require('dotenv').config();
+const config = require('./config')
 const { log } = require("./src/logger");
-const app  = require("./src/app");
-const port = 3000;
+const app  = require("./src/app");;
 
 
-app.listen(port, () => {
-  log.info(`Server search on port: ${port} `);
+app.listen(config.port, () => {
+  log.info(`Server search on port: ${config.port} `);
 });

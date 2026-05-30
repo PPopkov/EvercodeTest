@@ -1,11 +1,10 @@
 const axios = require("axios");
+const config = require("../config");
 const { ExternalServiceError } = require("../errors/ExternalServiceError");
 
 const getByTicker = async (ticker, retries = 3) => {
   try {
-    const response = await axios.get(
-      `https://api.binance.com/api/v3/ticker/price`
-    );
+    const response = await axios.get(config.binanceApiUrl);
     const allPrice = response.data;
     const filtredPrice = allPrice
       .filter((item) => item.symbol.includes(ticker) && Number(item.price) > 0)

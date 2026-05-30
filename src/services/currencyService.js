@@ -1,55 +1,63 @@
 const { NotFoundError } = require("../errors/NotFoundError");
 const { ValidationError } = require("../errors/ValidationError");
 
-const currencies = [];
-let nextId = 1;
+function createCurrencyService() {
+  const currencies = [];
+  let nextId = 1;
 
-const getAll = () => {
-  return currencies;
-};
+  return {
+    getAll: () => {
+      return currencies;
+    },
+    getById: (id) => {
+      const currency = currencies.find((currency) => currency.id === id);
+      if (!currency) throw new NotFoundError("Currency not found");
+      return currency;
+    },
+    getByTicker: (ticker) => {
+      const currency = currencies.find((c) => c.ticker === ticker);
+      if (!currency) throw new NotFoundError("Валюта не найдена");
+      return currency;
+    },
 
-const getById = (id) => {
-  const currency = currencies.find((currency) => currency.id === id);
-  if (!currency) throw new NotFoundError("Currency not found");
-  return currency;
-};
+    create: (name, ticker) => {
+      if (!name || !ticker)
+        throw new ValidationError("The name and ticker fields are required");
+      if (typeof name !== "string" || typeof ticker !== "string")
+        throw new ValidationError(
+          "The name and ticker fields must be strings."
+        );
+      const newCurrency = { id: nextId++, name: name, ticker: ticker };
+      currencies.push(newCurrency);
+      return newCurrency;
+    },
 
-const getByTicker = (ticker) => {
-  const currency = currencies.find(c => c.ticker === ticker);
-  if (!currency) throw new NotFoundError('Валюта не найдена');
-  return currency;
-};
+    update: (id, name, ticker) => {
+      const currency = currencies.find((currency) => currency.id === id);
+      if (!currency) throw new NotFoundError("Currency not found");
+      if (typeof name !== "string" || typeof ticker !== "string")
+        throw new ValidationError(
+          "The name and ticker fields must be strings."
+        );
+      currency.name = name;
+      currency.ticker = ticker;
+      return currency;
+    },
 
-const create = (name, ticker) => {
-  if (!name || !ticker)
-    throw new ValidationError("The name and ticker fields are required");
-  if (typeof name !== "string" || typeof ticker !== "string")
-    throw new ValidationError("The name and ticker fields must be strings.");
-  const newCurrency = { id: nextId++, name: name, ticker: ticker };
-  currencies.push(newCurrency);
-  return newCurrency;
-};
+    remove: (id) => {
+      const index = currencies.findIndex((currency) => currency.id === id);
+      if (index === -1) throw new NotFoundError("Currency not found");
+      currencies.splice(index, 1);
+      return true;
+    },
 
-const update = (id, name, ticker) => {
-  const currency = currencies.find((currency) => currency.id === id);
-  if (!currency) throw new NotFoundError("Currency not found");
-  if (typeof name !== "string" || typeof ticker !== "string")
-    throw new ValidationError("The name and ticker fields must be strings.");
-  currency.name = name;
-  currency.ticker = ticker;
-  return currency;
-};
-
-const remove = (id) => {
-  const index = currencies.findIndex((currency) => currency.id === id);
-  if (index === -1) throw new NotFoundError("Currency not found");
-  currencies.splice(index, 1);
-  return true;
-};
-
-const reset = () => {
-  currencies.length = 0;
-  nextId = 1;
+    reset: () => {
+      currencies.length = 0;
+      nextId = 1;
+    },
+  };
 }
 
-module.exports = { getAll, getById, create, update, remove, reset, getByTicker };
+module.exports = {
+  createCurrencyService,
+};
