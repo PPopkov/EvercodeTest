@@ -1,25 +1,19 @@
 const { NotFoundError } = require("../errors/NotFoundError");
 const { ValidationError } = require("../errors/ValidationError");
 
-function createCurrencyService() {
-  const currencies = [];
-  let nextId = 1;
-
+function createCurrencyService(repository) {
   return {
-    getAll: () => {
-      return currencies;
-    },
+    getAll: () => repository.getAll(),
     getById: (id) => {
-      const currency = currencies.find((currency) => currency.id === id);
+      const currency = repository.getById(id);
       if (!currency) throw new NotFoundError("Currency not found");
       return currency;
     },
     getByTicker: (ticker) => {
-      const currency = currencies.find((c) => c.ticker === ticker);
-      if (!currency) throw new NotFoundError("Валюта не найдена");
+      const currency = repository.getByTicker(ticker);
+      if (!currency) throw new NotFoundError("Currency not found");
       return currency;
     },
-
     create: (name, ticker) => {
       if (!name || !ticker)
         throw new ValidationError("The name and ticker fields are required");
@@ -27,33 +21,20 @@ function createCurrencyService() {
         throw new ValidationError(
           "The name and ticker fields must be strings."
         );
-      const newCurrency = { id: nextId++, name: name, ticker: ticker };
-      currencies.push(newCurrency);
+      const newCurrency = repository.createCurrency(name, ticker);
       return newCurrency;
     },
-
     update: (id, name, ticker) => {
-      const currency = currencies.find((currency) => currency.id === id);
-      if (!currency) throw new NotFoundError("Currency not found");
+      const currency = repository.updateCurrency(id, name, ticker);
       if (typeof name !== "string" || typeof ticker !== "string")
         throw new ValidationError(
           "The name and ticker fields must be strings."
         );
-      currency.name = name;
-      currency.ticker = ticker;
       return currency;
     },
-
     remove: (id) => {
-      const index = currencies.findIndex((currency) => currency.id === id);
-      if (index === -1) throw new NotFoundError("Currency not found");
-      currencies.splice(index, 1);
+      repository.deleteCurrency(id);
       return true;
-    },
-
-    reset: () => {
-      currencies.length = 0;
-      nextId = 1;
     },
   };
 }
