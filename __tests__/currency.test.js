@@ -1,13 +1,23 @@
 const request = require("supertest");
+const { DatabaseSync } = require("node:sqlite");
 process.env.AUTH_TOKEN = "test-token-123";
 
 const { createApp } = require("../src/app");
 const { createCurrencyService } = require("../src/services/currencyService");
+const {
+  createCurrencyRepository,
+} = require("../src/repository/currencyRepository");
 let app;
+let db;
 
 beforeEach(() => {
-  const currencyService = createCurrencyService();
-  app = createApp(currencyService, {});
+  db = new DatabaseSync(":memory:");
+  db.exec(
+    `CREATE TABLE currencies (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, ticker TEXT NOT NULL UNIQUE)`
+  );
+  const repository = createCurrencyRepository(db);
+  const service = createCurrencyService(repository);
+  app = createApp(service, {});
 });
 
 test("/GET currency return empty array", async () => {
@@ -46,7 +56,7 @@ test("PUT change currency", async () => {
   expect(response.status).toBe(200);
 });
 
-test("DETELE remove currency", async () => {
+test("DELETE remove currency", async () => {
   await request(app)
     .post("/currency")
     .set("Authorization", "Bearer test-token-123")
