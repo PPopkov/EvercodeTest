@@ -1,3 +1,4 @@
+require('./src/database/db');
 const config = require("./config");
 const { log } = require("./src/logger");
 const { createApp } = require("./src/app");
