@@ -25,15 +25,16 @@ function createCurrencyService(repository) {
       return newCurrency;
     },
     update: (id, name, ticker) => {
-      const currency = repository.updateCurrency(id, name, ticker);
       if (typeof name !== "string" || typeof ticker !== "string")
         throw new ValidationError(
-          "The name and ticker fields must be strings."
-        );
-      return currency;
+      "The name and ticker fields must be strings."
+    );
+    const currency = repository.getById(id);
+    if (!currency) throw new NotFoundError("Currency not found");
+    return repository.updateCurrency(id, name, ticker);
     },
     remove: (id) => {
-      repository.deleteCurrency(id);
+      repository.deleteCurrency(id);  
       return true;
     },
   };
