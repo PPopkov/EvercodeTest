@@ -1,6 +1,6 @@
 const express = require("express");
 
-const createPriceRouter = (currencyService, binanceService) => {
+const createPriceRouter = (priceService) => {
   const router = express.Router();
 
   /**
@@ -26,15 +26,10 @@ const createPriceRouter = (currencyService, binanceService) => {
    *         description: Access denied
    */
 
-  router.get("/", async (req, res) => {
-    try {
+  router.get("/", (req, res) => {
       const ticker = req.query.currency;
-      currencyService.getByTicker(ticker);
-      const result = await binanceService.getByTicker(ticker);
+      const result = priceService.getCurrency(ticker);
       res.status(200).json(result);
-    } catch (error) {
-      res.status(error.statusCode).json({ error: error.message });
-    }
   });
 
   return router;

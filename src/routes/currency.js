@@ -19,13 +19,9 @@ function createCurrencyRouter(currencyService) {
    *         description: Access denied
    */
 
-  router.get("/", (req, res) => {
-    try {
+  router.get("/", (_, res) => {
       const result = currencyService.getAll();
       res.status(200).json(result);
-    } catch (error) {
-      res.status(error.statusCode).json({ error: error.message });
-    }
   });
 
   /**
@@ -47,13 +43,9 @@ function createCurrencyRouter(currencyService) {
    */
 
   router.get("/:id", (req, res) => {
-    try {
-      const id = Number(req.params.id);
-      const result = currencyService.getById(id);
-      res.status(200).json(result);
-    } catch (error) {
-      res.status(error.statusCode).json({ error: error.message });
-    }
+    const id = Number(req.params.id);
+    const result = currencyService.getById(id);
+    res.status(200).json(result);
   });
 
   /**
@@ -91,13 +83,9 @@ function createCurrencyRouter(currencyService) {
    */
 
   router.post("/", (req, res) => {
-    try {
-      const data = req.body;
-      const result = currencyService.create(data.name, data.ticker);
-      res.status(201).json(result);
-    } catch (error) {
-      res.status(error.statusCode).json({ error: error.message });
-    }
+    const data = req.body;
+    const result = currencyService.create(data.name, data.ticker);
+    res.status(201).json(result);
   });
 
   /**
@@ -136,14 +124,10 @@ function createCurrencyRouter(currencyService) {
    */
 
   router.put("/:id", (req, res) => {
-    try {
       const id = Number(req.params.id);
       const data = req.body;
       const result = currencyService.update(id, data.name, data.ticker);
       res.status(200).json(result);
-    } catch (error) {
-      res.status(error.statusCode).json({ error: error.message });
-    }
   });
 
   /**
@@ -165,13 +149,9 @@ function createCurrencyRouter(currencyService) {
    */
 
   router.delete("/:id", (req, res) => {
-    try {
       const id = Number(req.params.id);
       currencyService.remove(id);
       res.sendStatus(204);
-    } catch (error) {
-      res.status(error.statusCode).json({ error: error.message });
-    }
   });
 
 
