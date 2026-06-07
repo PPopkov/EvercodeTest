@@ -11,11 +11,11 @@ const mockLog = {
 }
 
 const mockPriceService = {
-  syncPrices: jest.fn()
+  syncPrices: jest.fn().mockResolvedValue()
 };
 
 test('syncPrices is called', () => {
-  jest.spyOn(global, 'setInterval');
+  jest.spyOn(global, 'setTimeout');
   scheduleService(mockPriceService, 1000, mockLog);
   jest.advanceTimersByTime(1000);
   expect(mockPriceService.syncPrices).toHaveBeenCalled();
