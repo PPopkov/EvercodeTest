@@ -2,7 +2,7 @@ const { NotFoundError } = require("../errors/NotFoundError");
 
 function createPriceService(currencyRepository, priceRepository, binanceService) {
   const self = {
-    getCurrency: (ticker) => {
+    getPricesByTicker: (ticker) => {
       if (!currencyRepository.getByTicker(ticker)) {
         throw new NotFoundError("Not Found");
       }
