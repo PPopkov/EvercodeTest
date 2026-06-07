@@ -22,8 +22,8 @@ const priceService = createPriceService(currencyRepository, priceRepository, bin
 
 scheduleService(priceService, 10000, log);
 
-const service = createApp(currencyService, priceService);
+const app = createApp(currencyService, priceService);
 
-service.listen(config.port, () => {
+app.listen(config.port, () => {
   log.info(`Server search on port: ${config.port} `);
 });
