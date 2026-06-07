@@ -28,7 +28,7 @@ const createPriceRouter = (priceService) => {
 
   router.get("/", (req, res) => {
       const ticker = req.query.currency;
-      const result = priceService.getCurrency(ticker);
+      const result = priceService.getPricesByTicker(ticker);
       res.status(200).json(result);
   });
 
