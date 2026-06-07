@@ -20,7 +20,7 @@ const currencyService = createCurrencyService(currencyRepository);
 const binanceService = createBinanceService();
 const priceService = createPriceService(currencyRepository, priceRepository, binanceService);
 
-scheduleService(priceService, 10000, log);
+scheduleService(priceService, config.priceUpdateInterval, log);
 
 const app = createApp(currencyService, priceService);
 

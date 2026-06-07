@@ -8,6 +8,7 @@ const config = {
     "https://api.binance.com/api/v3/ticker/price",
 
   env: process.env.NODE_ENV || "development",
+  priceUpdateInterval: process.env.PRICE_UPDATE_INTERVAL || 40000,
   appName: "CareerApp",
   version: "1.0.0",
 };
