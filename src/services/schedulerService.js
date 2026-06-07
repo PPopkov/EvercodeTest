@@ -1,12 +1,15 @@
-function scheduleService(
-priceService, interval, logger
-) {
-  logger.info(`Price updater started, interval: ${interval}ms`);
-  
-  setInterval(async () => {
-    priceService.syncPrices();
+function scheduleService(priceService, interval, logger) {
+  async function run() {
+    try {
+      await priceService.syncPrices();
+    } catch (error) {
+      logger.error(error.message);
+    }
+    setTimeout(run, interval);
+  }
 
-  }, interval);
+  logger.info(`Price updater started, interval: ${interval}ms`);
+  run();
 }
 
 module.exports = { scheduleService };
