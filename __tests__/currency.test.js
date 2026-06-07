@@ -42,6 +42,20 @@ test("/POST create currency", async () => {
   expect(response.status).toBe(201);
 });
 
+test("/POST create duplicate ticker returns 409", async () => {
+  await request(app)
+    .post("/currency")
+    .set("Authorization", "Bearer test-token-123")
+    .send({ name: "Bitcoin", ticker: "BTC" });
+
+    
+  const response = await request(app)
+    .post("/currency")
+    .set("Authorization", "Bearer test-token-123")
+    .send({ name: "Bitcoin", ticker: "BTC" });
+  expect(response.status).toBe(409);
+});
+
 test("PUT change currency", async () => {
   await request(app)
     .post("/currency")
