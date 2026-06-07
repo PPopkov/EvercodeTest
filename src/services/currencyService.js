@@ -1,3 +1,4 @@
+const { ConflictError } = require("../errors/ConflictError");
 const { NotFoundError } = require("../errors/NotFoundError");
 const { ValidationError } = require("../errors/ValidationError");
 
@@ -21,6 +22,9 @@ function createCurrencyService(repository) {
         throw new ValidationError(
           "The name and ticker fields must be strings."
         );
+      if(repository.getByTicker(ticker)) {
+        throw new ConflictError("The ticker must be unique");
+      }
       const newCurrency = repository.createCurrency(name, ticker);
       return newCurrency;
     },
