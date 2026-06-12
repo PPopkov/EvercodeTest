@@ -36,7 +36,7 @@ const server = app.listen(config.port, () => {
   log.info(`Server search on port: ${config.port} `);
 });
 
-function shutdown(signal) {
+function shutdown(signal: string) {
   log.info(`Received ${signal}, shutting down...`);
 
   stopScheduler();
