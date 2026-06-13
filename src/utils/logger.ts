@@ -1,8 +1,9 @@
-const config = require("../../config");
-const { getTimestamp } = require("./getTimestamp");
-const { randomUUID } = require("crypto");
+import { config } from "../../config";
+import { getTimestamp } from "./getTimestamp";
+import { randomUUID } from "crypto";
+import { Logger } from "../types/logger";
 
-function createLogger(appName) {
+export function createLogger (appName: string): Logger {
   return {
     info: (message, id = randomUUID()) => {
       console.log(`[INFO] [${appName}] [${id}] ${message} ${getTimestamp()}`);
@@ -22,6 +23,4 @@ function createLogger(appName) {
   };
 }
 
-const log = createLogger(config.appName);
-
-module.exports = { log };
+export  const log = createLogger(config.appName);
