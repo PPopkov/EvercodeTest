@@ -1,11 +1,13 @@
-const axios = require("axios");
-const config = require("../../config");
-const { ExternalServiceError } = require("../errors/ExternalServiceError");
+import axios, { isAxiosError } from "axios";
+import { config } from "../../config";
+import { BinanceService } from "../types/services/binanceService";
+import { BinanceTicker } from "../types";
+import { ExternalServiceError } from "../errors/ExternalServiceError";
 
-function createBinanceService() {
-  async function getByTicker(ticker, retries = 3) {
+export function createBinanceService(): BinanceService {
+  async function getByTicker(ticker: string, retries = 3) {
     try {
-      const response = await axios.get(config.binanceApiUrl);
+      const response = await axios.get<BinanceTicker[]>(config.binanceApiUrl);
       const allPrice = response.data;
       const filtredPrice = allPrice
         .filter(
@@ -17,7 +19,7 @@ function createBinanceService() {
       if (retries > 0) {
         return getByTicker(ticker, retries - 1);
       }
-      if (error.response) {
+      if (isAxiosError(error) && error.response?.status) {
         throw new ExternalServiceError(
           `Binance error: ${error.response.status}`
         );
@@ -28,5 +30,3 @@ function createBinanceService() {
 
   return { getByTicker };
 }
-
-module.exports = { createBinanceService };

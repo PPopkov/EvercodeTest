@@ -1,8 +1,11 @@
-const { NotFoundError } = require("../errors/NotFoundError");
+import { CurrencyRepository, PriceRepository } from "../types";
+import { BinanceService } from "../types/services/binanceService";
+import { PriceService } from "../types/services/priceService";
+import { NotFoundError } from "../errors/NotFoundError";
 
-function createPriceService(currencyRepository, priceRepository, binanceService) {
+export function createPriceService(currencyRepository: CurrencyRepository, priceRepository: PriceRepository, binanceService: BinanceService): PriceService {
   const self = {
-    getPricesByTicker: (ticker) => {
+    getPricesByTicker: (ticker: string) => {
       if (!currencyRepository.getByTicker(ticker)) {
         throw new NotFoundError("Not Found");
       }
@@ -16,7 +19,7 @@ function createPriceService(currencyRepository, priceRepository, binanceService)
         for (const route of routes) {
           priceRepository.savePrice(
             route.symbol,
-            route.price,
+            Number(route.price),
             new Date().toISOString()
           );
         }
@@ -28,6 +31,3 @@ function createPriceService(currencyRepository, priceRepository, binanceService)
   return self;
 }
 
-module.exports = {
-  createPriceService,
-};

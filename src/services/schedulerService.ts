@@ -1,5 +1,12 @@
-function scheduleService(priceService, interval, logger) {
-  const timers = [];
+import { Logger } from "../types/logger";
+import { PriceService } from "../types/services/priceService";
+
+export function scheduleService(
+  priceService: PriceService,
+  interval: number,
+  logger: Logger
+): () => void {
+  const timers: NodeJS.Timeout[] = [];
   let stopped = false;
 
   async function run() {
@@ -7,7 +14,8 @@ function scheduleService(priceService, interval, logger) {
     try {
       await priceService.syncPrices();
     } catch (error) {
-      logger.error(error.message);
+      const message = error instanceof Error ? error.message : "Unknown error";
+      logger.error(message);
     }
 
     if (!stopped) {
@@ -26,5 +34,3 @@ function scheduleService(priceService, interval, logger) {
     logger.info("Price updater stopped");
   };
 }
-
-module.exports = { scheduleService };
