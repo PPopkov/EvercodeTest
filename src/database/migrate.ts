@@ -1,7 +1,8 @@
-const database = require("./connection");
+import {db} from "./connection";
 
-function migrate() {
-  database.exec(`
+
+ export function migrate() {
+  db.exec(`
     CREATE TABLE IF NOT EXISTS currencies (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
@@ -9,7 +10,7 @@ function migrate() {
     ) 
   `);
 
-  database.exec(`
+  db.exec(`
     CREATE TABLE IF NOT EXISTS prices (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       symbol TEXT NOT NULL UNIQUE,
@@ -17,9 +18,4 @@ function migrate() {
       updated_at TEXT NOT NULL
     ) 
   `);
-} 
-
-module.exports = migrate ;
-
-
-
+}
