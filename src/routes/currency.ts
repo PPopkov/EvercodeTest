@@ -1,6 +1,7 @@
-const express = require("express");
+import express from "express";
+import { CurrencyService } from "../types/services/currencyService";
 
-function createCurrencyRouter(currencyService) {
+export function createCurrencyRouter(currencyService: CurrencyService) {
   const router = express.Router();
 
   /**
@@ -158,4 +159,3 @@ function createCurrencyRouter(currencyService) {
   return router;
 }
 
-module.exports ={ createCurrencyRouter};

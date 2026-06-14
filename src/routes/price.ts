@@ -1,6 +1,7 @@
-const express = require("express");
+import express from "express";
+import { PriceService } from "../types/services/priceService";
 
-const createPriceRouter = (priceService) => {
+export const createPriceRouter = (priceService: PriceService) => {
   const router = express.Router();
 
   /**
@@ -27,12 +28,14 @@ const createPriceRouter = (priceService) => {
    */
 
   router.get("/", (req, res) => {
-      const ticker = req.query.currency;
-      const result = priceService.getPricesByTicker(ticker);
-      res.status(200).json(result);
+    const ticker = req.query.currency as string;
+    if (!ticker) {
+      res.status(400).json({ error: "Currency query parameter is required" });
+      return;
+    }
+    const result = priceService.getPricesByTicker(ticker);
+    res.status(200).json(result);
   });
 
   return router;
 };
-
-module.exports = { createPriceRouter };
