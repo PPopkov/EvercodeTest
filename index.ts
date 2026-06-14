@@ -1,18 +1,16 @@
-const config = require("./config");
-const db = require("./src/database/connection");
-const migrate = require("./src/database/migrate");
+import {config} from "./config";
+import {db }from "./src/database/connection";
+import {migrate} from "./src/database/migrate";
 migrate();
-const { scheduleService } = require("./src/services/schedulerService");
-const { log } = require("./src/utils/logger");
-const { createApp } = require("./src/app");
+import { scheduleService } from "./src/services/schedulerService";
+import { log } from "./src/utils/logger";
+import { createApp } from "./src/app";
 
-const { createCurrencyService } = require("./src/services/currencyService");
-const {
-  createCurrencyRepository,
-} = require("./src/repository/currencyRepository");
-const { createPriceRepository } = require("./src/repository/priceRepository");
-const { createPriceService } = require("./src/services/priceService");
-const { createBinanceService } = require("./src/services/binanceService");
+import { createCurrencyService } from "./src/services/currencyService";
+import { createCurrencyRepository } from "./src/repository/currencyRepository";
+import { createPriceRepository } from "./src/repository/priceRepository";
+import { createPriceService } from "./src/services/priceService";
+import { createBinanceService } from "./src/services/binanceService";
 
 const currencyRepository = createCurrencyRepository(db);
 const priceRepository = createPriceRepository(db);

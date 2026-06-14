@@ -1,5 +1,5 @@
-const swaggerJsdoc = require("swagger-jsdoc");
-const path = require("path");
+import swaggerJsdoc from "swagger-jsdoc";
+import path from "path";
 
 const options = {
   definition: {
@@ -19,12 +19,10 @@ const options = {
     },
   },
   apis: [
-    path.join(__dirname, "../routes/currency.js"),
-    path.join(__dirname, "../routes/status.js"),
-    path.join(__dirname, "../routes/price.js"),
+    path.join(__dirname, "../routes/currency.ts"),
+    path.join(__dirname, "../routes/status.ts"),
+    path.join(__dirname, "../routes/price.ts"),
   ],
 };
 
-const spec = swaggerJsdoc(options);
-
-module.exports = spec;
+export const spec = swaggerJsdoc(options);
