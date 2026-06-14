@@ -1,4 +1,3 @@
-/// <reference types="jest" />
 import request from "supertest";
 import { DatabaseSync } from "node:sqlite";
 
