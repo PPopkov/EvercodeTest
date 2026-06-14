@@ -1,5 +1,3 @@
-/// <reference types="jest" />
-
 import { Logger } from "../src/types/logger";
 import { scheduleService } from "../src/services/schedulerService";
 import { PriceService } from "../src/types/services/priceService";
