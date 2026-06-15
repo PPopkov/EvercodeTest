@@ -89,3 +89,43 @@ test("GET /price without currency returns 400", async () => {
   expect(response.body).toEqual({ error: "Currency query parameter is required" });
 });
 
+test("/GET price history without current token return 401", async () => {
+  const response = await request(app).get("/price/history?currency=BTC");
+  expect(response.status).toBe(401);
+  expect(response.body).toEqual({ error: "No token" });
+});
+
+test("/GET price history with wrong token return 403", async () => {
+  const response = await request(app).get("/price/history?currency=BTC").set("Authorization", "Bearer wrong-token");
+  expect(response.status).toBe(403);
+  expect(response.body).toEqual({ error: "Access denied" });
+})
+
+test("/GET price history return 200", async () => {
+  db.prepare('INSERT INTO currencies (name, ticker) VALUES (?, ?)').run("Bitcoin", "BTC");
+  db.prepare('INSERT INTO prices_history (symbol, price, recorded_at) VALUES (?, ?, ?)').run("BTC", 5000, "2024-01-01T00:00:00.000Z");
+  const response = await request(app).get("/price/history?currency=BTC").set("Authorization", "Bearer test-token-123");
+  expect(response.status).toBe(200);
+  expect(response.body).toEqual([{
+    id: 1,
+    symbol: "BTC",
+    price: 5000,
+    recorded_at: "2024-01-01T00:00:00.000Z",
+  }])
+})
+
+test("/GET price history wrong currency return 404", async () => {
+  const response = await request(app)
+    .get("/price/history?currency=XXX")
+    .set("Authorization", "Bearer test-token-123");
+  expect(response.status).toBe(404);
+  expect(response.body).toEqual({ error: "Not Found" });
+})
+
+test("GET /price/history without currency returns 400", async () => {
+  const response = await request(app)
+    .get("/price/history")
+    .set("Authorization", "Bearer test-token-123")
+  expect(response.status).toBe(400)
+  expect(response.body).toEqual({ error: "Currency query parameter is required" });
+});

@@ -30,7 +30,13 @@ export function createPriceService(currencyRepository: CurrencyRepository, price
         }
       }
 
-    }
+    },
+    getPriceHistory: (ticker: string) => {
+      if (!currencyRepository.getByTicker(ticker)) {
+        throw new NotFoundError("Not Found");
+      }
+      return priceHistoryRepository.getHistoryBySymbol(ticker);
+    },
   };
 
   return self;
