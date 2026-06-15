@@ -4,3 +4,5 @@ export { BinanceTicker } from "./api/binance";
 export { AppConfig } from "./config";
 export { CurrencyRepository } from "./repositories/currencyRepository";
 export { PriceRepository } from "./repositories/priceRepository";
+export { PriceHistoryRepository } from "./repositories/priceHistoryRepository";
+export { PriceHistory } from "./entities/priceHistory";

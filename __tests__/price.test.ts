@@ -6,6 +6,7 @@ process.env.AUTH_TOKEN = "test-token-123";
 import { createCurrencyRepository } from "../src/repository/currencyRepository";
 import { createCurrencyService } from "../src/services/currencyService";
 import { createPriceRepository } from "../src/repository/priceRepository";
+import { createPriceHistoryRepository } from "../src/repository/priceHistoryRepository";
 import { createPriceService } from "../src/services/priceService";
 import { BinanceService } from "../src/types/services/binanceService";
 import { createApp } from "../src/app";
@@ -24,8 +25,13 @@ beforeEach(() => {
     `CREATE TABLE prices (id INTEGER PRIMARY KEY AUTOINCREMENT, symbol TEXT NOT NULL UNIQUE, price REAL NOT NULL, updated_at TEXT NOT NULL)`
   );
 
+  db.exec(
+    `CREATE TABLE prices_history (id INTEGER PRIMARY KEY AUTOINCREMENT, symbol TEXT NOT NULL, price REAL NOT NULL, recorded_at TEXT NOT NULL)`
+  );
+
   const currencyRepository = createCurrencyRepository(db);
   const priceRepository = createPriceRepository(db);
+  const priceHistoryRepository = createPriceHistoryRepository(db);
   const currencyService = createCurrencyService(currencyRepository);
 
   const mockBinanceService: BinanceService = {
@@ -35,6 +41,7 @@ beforeEach(() => {
   const priceService = createPriceService(
     currencyRepository,
     priceRepository,
+    priceHistoryRepository,
     mockBinanceService
   );
 

@@ -1,6 +1,6 @@
-import {config} from "./config";
-import {db }from "./src/database/connection";
-import {migrate} from "./src/database/migrate";
+import { config } from "./config";
+import { db } from "./src/database/connection";
+import { migrate } from "./src/database/migrate";
 migrate();
 import { scheduleService } from "./src/services/schedulerService";
 import { log } from "./src/utils/logger";
@@ -11,14 +11,17 @@ import { createCurrencyRepository } from "./src/repository/currencyRepository";
 import { createPriceRepository } from "./src/repository/priceRepository";
 import { createPriceService } from "./src/services/priceService";
 import { createBinanceService } from "./src/services/binanceService";
+import { createPriceHistoryRepository } from "./src/repository/priceHistoryRepository";
 
 const currencyRepository = createCurrencyRepository(db);
 const priceRepository = createPriceRepository(db);
 const currencyService = createCurrencyService(currencyRepository);
+const priceHistoryRepository = createPriceHistoryRepository(db);
 const binanceService = createBinanceService();
 const priceService = createPriceService(
   currencyRepository,
   priceRepository,
+  priceHistoryRepository,
   binanceService
 );
 
