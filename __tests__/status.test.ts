@@ -12,6 +12,7 @@ let app: ReturnType<typeof createApp>;
 const mockCurrencyService = {} as CurrencyService;
 const mockPriceService: PriceService = {
   getPricesByTicker: jest.fn().mockReturnValue([]),
+  getPriceHistory: jest.fn().mockReturnValue([]),
   syncPrices: jest.fn().mockResolvedValue(undefined),
 };
 

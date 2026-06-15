@@ -20,6 +20,7 @@ beforeEach(() => {
   const service = createCurrencyService(repository);
   const mockPriceService: PriceService = {
     getPricesByTicker: jest.fn().mockReturnValue([]),
+    getPriceHistory: jest.fn().mockReturnValue([]),
     syncPrices: jest.fn().mockResolvedValue(undefined),
   };
   app = createApp(service, mockPriceService);

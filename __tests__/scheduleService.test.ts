@@ -20,6 +20,7 @@ const syncPrices = jest.fn().mockResolvedValue(undefined);
 
 const mockPriceService: PriceService = {
   getPricesByTicker: jest.fn().mockReturnValue([]),
+  getPriceHistory: jest.fn().mockReturnValue([]),
   syncPrices
 };
 
