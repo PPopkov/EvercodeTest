@@ -24,7 +24,7 @@ export function createCurrencyService(repository: CurrencyRepository): CurrencyS
         throw new ValidationError(
           "The name and ticker fields must be strings."
         );
-      if(repository.getByTicker(ticker)) {
+      if (repository.getByTicker(ticker)) {
         throw new ConflictError("The ticker must be unique");
       }
       const newCurrency = repository.createCurrency(name, ticker);
@@ -33,14 +33,20 @@ export function createCurrencyService(repository: CurrencyRepository): CurrencyS
     update: (id: number, name: string, ticker: string) => {
       if (typeof name !== "string" || typeof ticker !== "string")
         throw new ValidationError(
-      "The name and ticker fields must be strings."
-    );
-    const currency = repository.getById(id);
-    if (!currency) throw new NotFoundError("Currency not found");
-    return repository.updateCurrency(id, name, ticker);
+          "The name and ticker fields must be strings."
+        );
+      const currency = repository.getById(id);
+      if (!currency) throw new NotFoundError("Currency not found");
+
+      const existing = repository.getByTicker(ticker);
+      if (existing && existing.id !== id) {
+        throw new ConflictError("The ticker must be unique");
+      }
+
+      return repository.updateCurrency(id, name, ticker);
     },
     remove: (id: number) => {
-      repository.deleteCurrency(id);  
+      repository.deleteCurrency(id);
       return true;
     },
   };

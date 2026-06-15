@@ -127,6 +127,26 @@ test("PUT change undefined currency returns 404", async () => {
   expect(response.status).toBe(404);
 });
 
+test("PUT change if ticker is not unique returns 409", async () => {
+  await request(app)
+    .post("/currency")
+    .set("Authorization", "Bearer test-token-123")
+    .send({ name: "Bitcoin", ticker: "BTC" });
+
+  await request(app)
+    .post("/currency")
+    .set("Authorization", "Bearer test-token-123")
+    .send({ name: "Ethereum", ticker: "ETH" });
+
+  const response = await request(app)
+    .put("/currency/2")
+    .set("Authorization", "Bearer test-token-123")
+    .send({ name: "Bitcoin", ticker: "BTC" });
+  expect(response.body).toEqual({ error: "The ticker must be unique" })
+  expect(response.status).toBe(409);
+});
+
+
 test("DELETE remove currency 204", async () => {
   await request(app)
     .post("/currency")
