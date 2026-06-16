@@ -6,17 +6,24 @@ import { scheduleService } from "./src/services/schedulerService";
 import { log } from "./src/utils/logger";
 import { createApp } from "./src/app";
 
-import { createCurrencyService } from "./src/services/currencyService";
 import { createCurrencyRepository } from "./src/repository/currencyRepository";
 import { createPriceRepository } from "./src/repository/priceRepository";
+import { createPriceHistoryRepository } from "./src/repository/priceHistoryRepository";
+import { createAddressRepository } from "./src/repository/addressRepository";
+
+import { createCurrencyService } from "./src/services/currencyService";
 import { createPriceService } from "./src/services/priceService";
 import { createBinanceService } from "./src/services/binanceService";
-import { createPriceHistoryRepository } from "./src/repository/priceHistoryRepository";
+import { createAddressService } from "./src/services/addressService";
 
 const currencyRepository = createCurrencyRepository(db);
 const priceRepository = createPriceRepository(db);
 const currencyService = createCurrencyService(currencyRepository);
 const priceHistoryRepository = createPriceHistoryRepository(db);
+const addressRepository = createAddressRepository(db);
+
+
+
 const binanceService = createBinanceService();
 const priceService = createPriceService(
   currencyRepository,
@@ -24,6 +31,7 @@ const priceService = createPriceService(
   priceHistoryRepository,
   binanceService
 );
+const addressService = createAddressService(addressRepository);
 
 const stopScheduler = scheduleService(
   priceService,
@@ -31,7 +39,7 @@ const stopScheduler = scheduleService(
   log
 );
 
-const app = createApp(currencyService, priceService);
+const app = createApp(currencyService, priceService, addressService);
 
 const server = app.listen(config.port, () => {
   log.info(`Server search on port: ${config.port} `);

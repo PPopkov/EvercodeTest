@@ -5,6 +5,7 @@ process.env.AUTH_TOKEN = "test-token-123";
 
 import { CurrencyService } from "../src/types/services/currencyService";
 import { PriceService } from "../src/types/services/priceService";
+import { AddressService } from "../src/types";
 import { createApp } from "../src/app";
 
 let app: ReturnType<typeof createApp>;
@@ -16,7 +17,16 @@ const mockPriceService: PriceService = {
   syncPrices: jest.fn().mockResolvedValue(undefined),
 };
 
-app = createApp(mockCurrencyService, mockPriceService);
+const mockAddressService: AddressService = {
+  getAll: jest.fn().mockReturnValue([]),
+  getById: jest.fn(),
+  getByTicker: jest.fn(),
+  create: jest.fn(),
+  update: jest.fn(),
+  delete: jest.fn(),
+};
+
+app = createApp(mockCurrencyService, mockPriceService, mockAddressService);
 
 
 test("GET /status return ok", async () => {

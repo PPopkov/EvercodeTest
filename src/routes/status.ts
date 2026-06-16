@@ -13,6 +13,11 @@ export const router = express.Router()
  *     responses:
  *       200:
  *         description: Server is running
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: string
+ *               example: ok
  *       401:
  *         description: Token missing
  *       403:
