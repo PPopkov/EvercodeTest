@@ -1,6 +1,6 @@
 import { Logger } from "../src/types/logger";
 import { scheduleService } from "../src/services/schedulerService";
-import { PriceService } from "../src/types/services/priceService";
+import { BlockchainService, PriceService } from "../src/types";
 
 jest.useFakeTimers();
 
@@ -17,16 +17,29 @@ const mockLog: Logger = {
 }
 
 const syncPrices = jest.fn().mockResolvedValue(undefined);
+const syncHeight = jest.fn().mockResolvedValue(undefined);
 
 const mockPriceService: PriceService = {
   getPricesByTicker: jest.fn().mockReturnValue([]),
   getPriceHistory: jest.fn().mockReturnValue([]),
-  syncPrices
+  syncPrices,
 };
 
-test("syncPrices is called", () => {
-  const stop = scheduleService(mockPriceService, 1000, mockLog);
-  jest.advanceTimersByTime(1000);
+const mockBlockchainService: BlockchainService = {
+  getHeight: jest.fn(),
+  syncHeight,
+};
+
+test("syncPrices is called", async () => {
+  const stop = scheduleService(mockPriceService, mockBlockchainService, 1000, mockLog);
+  await Promise.resolve();
   expect(syncPrices).toHaveBeenCalled();
+  stop();
+});
+
+test("syncHeight is called", async () => {
+  const stop = scheduleService(mockPriceService, mockBlockchainService, 1000, mockLog);
+  await Promise.resolve();
+  expect(syncHeight).toHaveBeenCalled();
   stop();
 });

@@ -9,7 +9,7 @@ import { createCurrencyRepository } from "../src/repository/currencyRepository";
 import { createCurrencyService } from "../src/services/currencyService";
 
 import { PriceService } from "../src/types/services/priceService";
-import { AddressService } from "../src/types";
+import { AddressService, BlockchainService } from "../src/types";
 
 let app: ReturnType<typeof createApp>;
 let db: DatabaseSync;
@@ -17,7 +17,7 @@ let db: DatabaseSync;
 beforeEach(() => {
   db = new DatabaseSync(":memory:");
   db.exec(
-    `CREATE TABLE currencies (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, ticker TEXT NOT NULL UNIQUE)`
+    `CREATE TABLE currencies (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, ticker TEXT NOT NULL UNIQUE, blockchain TEXT NOT NULL )`
   );
   const repository = createCurrencyRepository(db);
   const service = createCurrencyService(repository);
@@ -35,7 +35,13 @@ beforeEach(() => {
     update: jest.fn(),
     delete: jest.fn(),
   };
-  app = createApp(service, mockPriceService, mockAddressService);
+
+  const mockBlockchainService: BlockchainService = {
+    getHeight: jest.fn(),
+    syncHeight: jest.fn().mockResolvedValue(undefined),
+  };
+
+  app = createApp(service, mockPriceService, mockAddressService, mockBlockchainService);
 });
 
 test("GET without authorization returns 401", async () => {
@@ -66,12 +72,12 @@ test("GET /currency/:id return currency 200", async () => {
   await request(app)
     .post("/currency")
     .set("Authorization", "Bearer test-token-123")
-    .send({ name: "Bitcoin", ticker: "BTC" });
+    .send({ name: "Bitcoin", ticker: "BTC", blockchain: "bitcoin" });
 
   const response = await request(app)
     .get("/currency/1")
     .set("Authorization", "Bearer test-token-123");
-  expect(response.body).toEqual({ id: 1, name: "Bitcoin", ticker: "BTC" })
+  expect(response.body).toEqual({ id: 1, name: "Bitcoin", ticker: "BTC", blockchain: "bitcoin" })
   expect(response.status).toBe(200);
 })
 
@@ -87,8 +93,8 @@ test("/POST create currency with correct data returns 201", async () => {
   const response = await request(app)
     .post("/currency")
     .set("Authorization", "Bearer test-token-123")
-    .send({ name: "Bitcoin", ticker: "BTC" });
-  expect(response.body).toEqual({ id: 1, name: "Bitcoin", ticker: "BTC" })
+    .send({ name: "Bitcoin", ticker: "BTC", blockchain: "bitcoin" });
+  expect(response.body).toEqual({ id: 1, name: "Bitcoin", ticker: "BTC", blockchain: "bitcoin" })
   expect(response.status).toBe(201);
 });
 
@@ -97,7 +103,7 @@ test("/POST create currency with incorrect data returns 400", async () => {
     .post("/currency")
     .set("Authorization", "Bearer test-token-123")
     .send({ name: "Bitcoin" });
-  expect(response.body).toEqual({ error: "The name and ticker fields are required" })
+  expect(response.body).toEqual({ error: "The name, ticker and blockchain fields are required" })
   expect(response.status).toBe(400);
 });
 
@@ -105,13 +111,13 @@ test("/POST create duplicate ticker returns 409", async () => {
   await request(app)
     .post("/currency")
     .set("Authorization", "Bearer test-token-123")
-    .send({ name: "Bitcoin", ticker: "BTC" });
+    .send({ name: "Bitcoin", ticker: "BTC", blockchain: "bitcoin" });
 
 
   const response = await request(app)
     .post("/currency")
     .set("Authorization", "Bearer test-token-123")
-    .send({ name: "Bitcoin", ticker: "BTC" });
+    .send({ name: "Bitcoin", ticker: "BTC", blockchain: "bitcoin" });
   expect(response.body).toEqual({ error: "The ticker must be unique" })
   expect(response.status).toBe(409);
 });
@@ -120,14 +126,14 @@ test("PUT change currency 200", async () => {
   await request(app)
     .post("/currency")
     .set("Authorization", "Bearer test-token-123")
-    .send({ name: "Bitcoin", ticker: "BTC" });
+    .send({ name: "Bitcoin", ticker: "BTC", blockchain: "bitcoin" });
 
   const response = await request(app)
     .put("/currency/1")
     .set("Authorization", "Bearer test-token-123")
-    .send({ name: "TON", ticker: "TN" });
+    .send({ name: "TON", ticker: "TN", blockchain: "ton" });
 
-  expect(response.body).toEqual({ id: 1, name: "TON", ticker: "TN" })
+  expect(response.body).toEqual({ id: 1, name: "TON", ticker: "TN", blockchain: "ton" })
   expect(response.status).toBe(200);
 });
 
@@ -135,7 +141,7 @@ test("PUT change undefined currency returns 404", async () => {
   const response = await request(app)
     .put("/currency/999")
     .set("Authorization", "Bearer test-token-123")
-    .send({ name: "Bitcoin", ticker: "BTC" });
+    .send({ name: "Bitcoin", ticker: "BTC", blockchain: "bitcoin" });
   expect(response.body).toEqual({ error: "Currency not found" })
   expect(response.status).toBe(404);
 });
@@ -144,27 +150,26 @@ test("PUT change if ticker is not unique returns 409", async () => {
   await request(app)
     .post("/currency")
     .set("Authorization", "Bearer test-token-123")
-    .send({ name: "Bitcoin", ticker: "BTC" });
+    .send({ name: "Bitcoin", ticker: "BTC", blockchain: "bitcoin" });
 
   await request(app)
     .post("/currency")
     .set("Authorization", "Bearer test-token-123")
-    .send({ name: "Ethereum", ticker: "ETH" });
+    .send({ name: "Ethereum", ticker: "ETH", blockchain: "ethereum" });
 
   const response = await request(app)
     .put("/currency/2")
     .set("Authorization", "Bearer test-token-123")
-    .send({ name: "Bitcoin", ticker: "BTC" });
+    .send({ name: "Bitcoin", ticker: "BTC", blockchain: "bitcoin" });
   expect(response.body).toEqual({ error: "The ticker must be unique" })
   expect(response.status).toBe(409);
 });
-
 
 test("DELETE remove currency 204", async () => {
   await request(app)
     .post("/currency")
     .set("Authorization", "Bearer test-token-123")
-    .send({ name: "Bitcoin", ticker: "BTC" });
+    .send({ name: "Bitcoin", ticker: "BTC", blockchain: "bitcoin" });
 
   const response = await request(app)
     .delete("/currency/1")

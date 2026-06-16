@@ -5,9 +5,13 @@ import { BinanceTicker } from "../types";
 import { ExternalServiceError } from "../errors/ExternalServiceError";
 
 export function createBinanceService(): BinanceService {
-  async function getByTicker(ticker: string, retries = 3) {
+  const maxRetries = config.binanceRetries;
+  const timeout = config.binanceTimeout;
+  async function getByTicker(ticker: string, retries = maxRetries) {
     try {
-      const response = await axios.get<BinanceTicker[]>(config.binanceApiUrl);
+      const response = await axios.get<BinanceTicker[]>(config.binanceApiUrl, {
+        timeout: timeout,
+      });
       const allPrice = response.data;
       const filtredPrice = allPrice
         .filter(

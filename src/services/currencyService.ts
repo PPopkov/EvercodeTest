@@ -1,8 +1,8 @@
-import { CurrencyService } from "../types/services/currencyService";
+import { CurrencyService } from "../types/";
 import { CurrencyRepository } from "../types";
-import { ConflictError } from "../errors/ConflictError";
-import { NotFoundError } from "../errors/NotFoundError";
-import { ValidationError } from "../errors/ValidationError";
+import { ConflictError } from "../errors/";
+import { NotFoundError } from "../errors/";
+import { ValidationError } from "../errors/";
 
 export function createCurrencyService(repository: CurrencyRepository): CurrencyService {
   return {
@@ -17,21 +17,21 @@ export function createCurrencyService(repository: CurrencyRepository): CurrencyS
       if (!currency) throw new NotFoundError("Currency not found");
       return currency;
     },
-    create: (name: string, ticker: string) => {
-      if (!name || !ticker)
-        throw new ValidationError("The name and ticker fields are required");
-      if (typeof name !== "string" || typeof ticker !== "string")
+    create: (name: string, ticker: string, blockchain: string) => {
+      if (!name || !ticker || !blockchain)
+        throw new ValidationError("The name, ticker and blockchain fields are required");
+      if (typeof name !== "string" || typeof ticker !== "string" || typeof blockchain !== "string")
         throw new ValidationError(
           "The name and ticker fields must be strings."
         );
       if (repository.getByTicker(ticker)) {
         throw new ConflictError("The ticker must be unique");
       }
-      const newCurrency = repository.createCurrency(name, ticker);
+      const newCurrency = repository.createCurrency(name, ticker, blockchain);
       return newCurrency;
     },
-    update: (id: number, name: string, ticker: string) => {
-      if (typeof name !== "string" || typeof ticker !== "string")
+    update: (id: number, name: string, ticker: string, blockchain: string) => {
+      if (typeof name !== "string" || typeof ticker !== "string" || typeof blockchain !== "string")
         throw new ValidationError(
           "The name and ticker fields must be strings."
         );
@@ -43,7 +43,7 @@ export function createCurrencyService(repository: CurrencyRepository): CurrencyS
         throw new ConflictError("The ticker must be unique");
       }
 
-      return repository.updateCurrency(id, name, ticker);
+      return repository.updateCurrency(id, name, ticker, blockchain);
     },
     remove: (id: number) => {
       repository.deleteCurrency(id);

@@ -1,8 +1,10 @@
+import { BlockchainService, PriceService } from "../types";
 import { Logger } from "../types/logger";
-import { PriceService } from "../types/services/priceService";
+
 
 export function scheduleService(
   priceService: PriceService,
+  blockchainService: BlockchainService,
   interval: number,
   logger: Logger
 ): () => void {
@@ -13,6 +15,7 @@ export function scheduleService(
     if (stopped) return;
     try {
       await priceService.syncPrices();
+      await blockchainService.syncHeight();
     } catch (error) {
       const message = error instanceof Error ? error.message : "Unknown error";
       logger.error(message);

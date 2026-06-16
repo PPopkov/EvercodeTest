@@ -77,5 +77,6 @@ export const createPriceRouter = (priceService: PriceService) => {
     const result = priceService.getPriceHistory(ticker);
     res.status(200).json(result);
   });
+
   return router;
 };

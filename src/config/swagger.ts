@@ -24,6 +24,7 @@ const options = {
     path.join(__dirname, "../routes/status.ts"),
     path.join(__dirname, "../routes/price.ts"),
     path.join(__dirname, "../routes/address.ts"),
+    path.join(__dirname, "../routes/blockchain.ts"),
   ],
 };
 

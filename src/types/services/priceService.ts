@@ -1,5 +1,5 @@
-import { Price } from "../entities/price";
-import { PriceHistory } from "../entities/priceHistory";
+import { Price } from "..";
+import { PriceHistory } from "..";
 
 export interface PriceService {
   getPricesByTicker: (ticker: string) => Price[];
