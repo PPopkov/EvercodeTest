@@ -46,4 +46,12 @@ export function migrate() {
       updated_at TEXT NOT NULL
     ) 
   `);
+
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS address_balances (
+      address TEXT PRIMARY KEY,
+      balance REAL NOT NULL,
+      updated_at TEXT NOT NULL
+    ) 
+  `);
 }

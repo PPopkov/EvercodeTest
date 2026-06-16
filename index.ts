@@ -11,22 +11,27 @@ import { createPriceRepository } from "./src/repository/priceRepository";
 import { createPriceHistoryRepository } from "./src/repository/priceHistoryRepository";
 import { createAddressRepository } from "./src/repository/addressRepository";
 import { createBlockchainHeightRepository } from "./src/repository/blockchainHeightRepository";
+import { createAddressBalanceRepository } from "./src/repository/addressBalanceRepository";
 
 import { createCurrencyService } from "./src/services/currencyService";
 import { createPriceService } from "./src/services/priceService";
 import { createBinanceService } from "./src/services/binanceService";
 import { createAddressService } from "./src/services/addressService";
 import { createBlockchainService } from "./src/services/BlockchainService";
+import { createAddressBalanceService } from "./src/services/addressBalanceService";
 
 const currencyRepository = createCurrencyRepository(db);
 const priceRepository = createPriceRepository(db);
 const priceHistoryRepository = createPriceHistoryRepository(db);
 const currencyService = createCurrencyService(currencyRepository);
 const addressRepository = createAddressRepository(db);
+const addressBalanceRepository = createAddressBalanceRepository(db);
+const addressBalanceService = createAddressBalanceService(addressBalanceRepository, currencyRepository, addressRepository);
 const blockchainRepository = createBlockchainHeightRepository(db);
 const blockchainService = createBlockchainService(blockchainRepository, currencyRepository);
 
 const binanceService = createBinanceService();
+
 const priceService = createPriceService(
   currencyRepository,
   priceRepository,
@@ -38,11 +43,13 @@ const addressService = createAddressService(addressRepository);
 const stopScheduler = scheduleService(
   priceService,
   blockchainService,
+  addressBalanceService,
+  addressService,
   config.priceUpdateInterval,
   log
 );
 
-const app = createApp(currencyService, priceService, addressService, blockchainService);
+const app = createApp(currencyService, priceService, addressService, addressBalanceService, blockchainService);
 
 const server = app.listen(config.port, () => {
   log.info(`Server search on port: ${config.port} `);
