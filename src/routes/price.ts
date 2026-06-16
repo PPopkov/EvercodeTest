@@ -8,9 +8,9 @@ export const createPriceRouter = (priceService: PriceService) => {
    * @openapi
    * /price:
    *   get:
-   *     summary: Get all prices by ticker
+   *     summary: Get current prices by ticker
    *     tags:
-   *       - Currency by ticker
+   *       - Price
    *     security:
    *       - bearerAuth: []
    *     parameters:
@@ -19,12 +19,16 @@ export const createPriceRouter = (priceService: PriceService) => {
    *         required: true
    *         schema:
    *           type: string
-   *           example: BTC
+   *         example: BTC
    *     responses:
    *       200:
-   *         description: List of currencies
+   *         description: List of prices
+   *       400:
+   *         description: Currency query parameter is required
    *       403:
    *         description: Access denied
+   *       404:
+   *         description: Currency not found
    */
 
   router.get("/", (req, res) => {
@@ -36,6 +40,33 @@ export const createPriceRouter = (priceService: PriceService) => {
     const result = priceService.getPricesByTicker(ticker);
     res.status(200).json(result);
   });
+
+  /**
+   * @openapi
+   * /price/history:
+   *   get:
+   *     summary: Get price history by ticker
+   *     tags:
+   *       - Price
+   *     security:
+   *       - bearerAuth: []
+   *     parameters:
+   *       - in: query
+   *         name: currency
+   *         required: true
+   *         schema:
+   *           type: string
+   *         example: BTC
+   *     responses:
+   *       200:
+   *         description: Price history
+   *       400:
+   *         description: Currency query parameter is required
+   *       403:
+   *         description: Access denied
+   *       404:
+   *         description: Currency not found
+   */
 
   router.get("/history", (req, res) => {
     const ticker = req.query.currency as string;

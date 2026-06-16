@@ -4,9 +4,12 @@ import { DatabaseSync } from "node:sqlite";
 process.env.AUTH_TOKEN = "test-token-123";
 
 import { createApp } from "../src/app";
-import { createCurrencyService } from "../src/services/currencyService";
+
 import { createCurrencyRepository } from "../src/repository/currencyRepository";
+import { createCurrencyService } from "../src/services/currencyService";
+
 import { PriceService } from "../src/types/services/priceService";
+import { AddressService } from "../src/types";
 
 let app: ReturnType<typeof createApp>;
 let db: DatabaseSync;
@@ -23,7 +26,16 @@ beforeEach(() => {
     getPriceHistory: jest.fn().mockReturnValue([]),
     syncPrices: jest.fn().mockResolvedValue(undefined),
   };
-  app = createApp(service, mockPriceService);
+
+  const mockAddressService: AddressService = {
+    getAll: jest.fn().mockReturnValue([]),
+    getById: jest.fn(),
+    getByTicker: jest.fn(),
+    create: jest.fn(),
+    update: jest.fn(),
+    delete: jest.fn(),
+  };
+  app = createApp(service, mockPriceService, mockAddressService);
 });
 
 test("GET without authorization returns 401", async () => {

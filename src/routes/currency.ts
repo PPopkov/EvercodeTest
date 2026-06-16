@@ -34,13 +34,20 @@ export function createCurrencyRouter(currencyService: CurrencyService) {
    *       - Currency
    *     security:
    *       - bearerAuth: []
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         required: true
+   *         schema:
+   *           type: integer
+   *         example: 1
    *     responses:
-   *         200:
-   *           description: List of currencies
-   *         403:
-   *           description: Access denied
-   *         404:
-   *           description: Currency not found
+   *       200:
+   *         description: Currency found
+   *       403:
+   *         description: Access denied
+   *       404:
+   *         description: Currency not found
    */
 
   router.get("/:id", (req, res) => {
@@ -81,6 +88,8 @@ export function createCurrencyRouter(currencyService: CurrencyService) {
    *         description: Incorrect data
    *       403:
    *         description: Access denied
+   *       409:
+   *         description: Ticker already exists
    */
 
   router.post("/", (req, res) => {
@@ -93,11 +102,18 @@ export function createCurrencyRouter(currencyService: CurrencyService) {
    * @openapi
    * /currency/{id}:
    *   put:
-   *     summary: Make changes to the currency
+   *     summary: Update a currency
    *     tags:
    *       - Currency
    *     security:
    *       - bearerAuth: []
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         required: true
+   *         schema:
+   *           type: integer
+   *         example: 1
    *     requestBody:
    *       required: true
    *       content:
@@ -116,12 +132,15 @@ export function createCurrencyRouter(currencyService: CurrencyService) {
    *                 example: BTC
    *     responses:
    *       200:
-   *         description: Currency created
+   *         description: Currency updated
    *       400:
    *         description: Incorrect data
    *       403:
    *         description: Access denied
-   *
+   *       404:
+   *         description: Currency not found
+   *       409:
+   *         description: Ticker already exists
    */
 
   router.put("/:id", (req, res) => {
@@ -140,13 +159,20 @@ export function createCurrencyRouter(currencyService: CurrencyService) {
    *       - Currency
    *     security:
    *       - bearerAuth: []
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         required: true
+   *         schema:
+   *           type: integer
+   *         example: 1
    *     responses:
-   *         200:
-   *           description: List of currencies
-   *         403:
-   *           description: Access denied
-   *         404:
-   *           description: Currency not found
+   *       204:
+   *         description: Currency deleted
+   *       403:
+   *         description: Access denied
+   *       404:
+   *         description: Currency not found
    */
 
   router.delete("/:id", (req, res) => {

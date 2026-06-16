@@ -27,4 +27,13 @@ export function migrate() {
       recorded_at TEXT NOT NULL
     ) 
   `);
+
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS addresses (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      address TEXT NOT NULL UNIQUE,
+      label TEXT,
+      ticker TEXT NOT NULL
+    ) 
+  `);
 }

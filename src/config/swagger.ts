@@ -5,9 +5,10 @@ const options = {
   definition: {
     openapi: "3.0.0",
     info: {
-      title: "Currency API",
+      title: "Crypto Tracker API",
       version: "1.0.0",
-      description: "API for managing currencies",
+      description:
+        "REST API for managing cryptocurrencies, prices, and wallet addresses",
     },
     components: {
       securitySchemes: {
@@ -22,6 +23,7 @@ const options = {
     path.join(__dirname, "../routes/currency.ts"),
     path.join(__dirname, "../routes/status.ts"),
     path.join(__dirname, "../routes/price.ts"),
+    path.join(__dirname, "../routes/address.ts"),
   ],
 };
 
