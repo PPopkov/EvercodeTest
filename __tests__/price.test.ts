@@ -9,7 +9,7 @@ import { createPriceRepository } from "../src/repository/priceRepository";
 import { createPriceHistoryRepository } from "../src/repository/priceHistoryRepository";
 import { createPriceService } from "../src/services/priceService";
 import { BinanceService } from "../src/types/services/binanceService";
-import { AddressService, BlockchainService } from "../src/types";
+import { AddressBalanceService, AddressService, BlockchainService } from "../src/types";
 import { createApp } from "../src/app";
 
 let app: ReturnType<typeof createApp>;
@@ -55,12 +55,23 @@ beforeEach(() => {
     delete: jest.fn(),
   };
 
+  const mockAddressBalanceService: AddressBalanceService = {
+    getByAddress: jest.fn(),
+    syncAddressBalance: jest.fn().mockResolvedValue(undefined),
+  };
+
   const mockBlockchainService: BlockchainService = {
     getHeight: jest.fn(),
     syncHeight: jest.fn().mockResolvedValue(undefined),
   };
 
-  app = createApp(currencyService, priceService, mockAddressService, mockBlockchainService);
+  app = createApp(
+    currencyService,
+    priceService,
+    mockAddressService,
+    mockAddressBalanceService,
+    mockBlockchainService
+  );
 });
 
 test("/GET without current token return 401", async () => {

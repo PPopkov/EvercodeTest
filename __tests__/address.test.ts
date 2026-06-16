@@ -8,7 +8,7 @@ import { createAddressRepository } from "../src/repository/addressRepository";
 import { createAddressService } from "../src/services/addressService";
 import { CurrencyService } from "../src/types/services/currencyService";
 import { PriceService } from "../src/types/services/priceService";
-import { BlockchainService } from "../src/types";
+import { AddressBalanceService, BlockchainService } from "../src/types";
 
 let app: ReturnType<typeof createApp>;
 let db: DatabaseSync;
@@ -31,11 +31,21 @@ beforeEach(() => {
         getPriceHistory: jest.fn().mockReturnValue([]),
         syncPrices: jest.fn().mockResolvedValue(undefined),
     };
+    const mockAddressBalanceService: AddressBalanceService = {
+        getByAddress: jest.fn(),
+        syncAddressBalance: jest.fn().mockResolvedValue(undefined),
+    };
     const mockBlockchainService: BlockchainService = {
         getHeight: jest.fn(),
         syncHeight: jest.fn().mockResolvedValue(undefined),
     };
-    app = createApp(mockCurrencyService, mockPriceService, addressService, mockBlockchainService);
+    app = createApp(
+        mockCurrencyService,
+        mockPriceService,
+        addressService,
+        mockAddressBalanceService,
+        mockBlockchainService
+    );
 });
 
 test("GET without authorization returns 401", async () => {

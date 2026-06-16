@@ -1,10 +1,16 @@
-import { BlockchainService, PriceService } from "../types";
+import {
+  AddressBalanceService,
+  AddressService,
+  BlockchainService,
+  PriceService,
+} from "../types";
 import { Logger } from "../types/logger";
-
 
 export function scheduleService(
   priceService: PriceService,
   blockchainService: BlockchainService,
+  addressBalanceService: AddressBalanceService,
+  addressService: AddressService,
   interval: number,
   logger: Logger
 ): () => void {
@@ -13,9 +19,19 @@ export function scheduleService(
 
   async function run() {
     if (stopped) return;
+    const addresses = addressService.getAll();
     try {
       await priceService.syncPrices();
       await blockchainService.syncHeight();
+      for (const address of addresses) {
+        try {
+          await addressBalanceService.syncAddressBalance(address.address);
+        } catch (error) {
+          const message =
+            error instanceof Error ? error.message : "Unknown error";
+          logger.error(`Failed to sync address ${address.address}: ${message}`);
+        }
+      }
     } catch (error) {
       const message = error instanceof Error ? error.message : "Unknown error";
       logger.error(message);

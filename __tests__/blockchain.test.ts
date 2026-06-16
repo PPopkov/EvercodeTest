@@ -7,7 +7,7 @@ import { createApp } from "../src/app";
 import { createCurrencyRepository } from "../src/repository/currencyRepository";
 import { createBlockchainHeightRepository } from "../src/repository/blockchainHeightRepository";
 import { createBlockchainService } from "../src/services/BlockchainService";
-import { AddressService, CurrencyService, PriceService } from "../src/types";
+import { AddressBalanceService, AddressService, CurrencyService, PriceService } from "../src/types";
 
 let app: ReturnType<typeof createApp>;
 let db: DatabaseSync;
@@ -43,10 +43,16 @@ beforeEach(() => {
     delete: jest.fn(),
   };
 
+  const mockAddressBalanceService: AddressBalanceService = {
+    getByAddress: jest.fn(),
+    syncAddressBalance: jest.fn().mockResolvedValue(undefined),
+  };
+
   app = createApp(
     mockCurrencyService,
     mockPriceService,
     mockAddressService,
+    mockAddressBalanceService,
     blockchainService
   );
 });

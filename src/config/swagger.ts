@@ -20,10 +20,11 @@ const options = {
     },
   },
   apis: [
-    path.join(__dirname, "../routes/currency.ts"),
     path.join(__dirname, "../routes/status.ts"),
-    path.join(__dirname, "../routes/price.ts"),
+    path.join(__dirname, "../routes/currency.ts"),
     path.join(__dirname, "../routes/address.ts"),
+    path.join(__dirname, "../routes/addressBalance.ts"),
+    path.join(__dirname, "../routes/price.ts"),
     path.join(__dirname, "../routes/blockchain.ts"),
   ],
 };
