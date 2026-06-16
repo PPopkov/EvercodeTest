@@ -9,7 +9,7 @@ import { createPriceRepository } from "../src/repository/priceRepository";
 import { createPriceHistoryRepository } from "../src/repository/priceHistoryRepository";
 import { createPriceService } from "../src/services/priceService";
 import { BinanceService } from "../src/types/services/binanceService";
-import { AddressService } from "../src/types";
+import { AddressService, BlockchainService } from "../src/types";
 import { createApp } from "../src/app";
 
 let app: ReturnType<typeof createApp>;
@@ -19,7 +19,7 @@ beforeEach(() => {
   db = new DatabaseSync(":memory:");
 
   db.exec(
-    `CREATE TABLE currencies (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, ticker TEXT NOT NULL UNIQUE)`
+    `CREATE TABLE currencies (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, ticker TEXT NOT NULL UNIQUE, blockchain TEXT NOT NULL)`
   );
 
   db.exec(
@@ -55,7 +55,12 @@ beforeEach(() => {
     delete: jest.fn(),
   };
 
-  app = createApp(currencyService, priceService, mockAddressService);
+  const mockBlockchainService: BlockchainService = {
+    getHeight: jest.fn(),
+    syncHeight: jest.fn().mockResolvedValue(undefined),
+  };
+
+  app = createApp(currencyService, priceService, mockAddressService, mockBlockchainService);
 });
 
 test("/GET without current token return 401", async () => {
@@ -71,7 +76,7 @@ test("/GET with wrong token return 403", async () => {
 })
 
 test("/GET currency's price return 200", async () => {
-  db.prepare('INSERT INTO currencies (name, ticker) VALUES (?, ?)').run("Bitcoin", "BTC");
+  db.prepare('INSERT INTO currencies (name, ticker, blockchain) VALUES (?, ?, ?)').run("Bitcoin", "BTC", "bitcoin");
   db.prepare('INSERT INTO prices (symbol, price, updated_at) VALUES (?, ?, ?)').run("BTC", 5000, "2024-01-01T00:00:00.000Z");
   const response = await request(app).get("/price?currency=BTC").set("Authorization", "Bearer test-token-123");
   expect(response.status).toBe(200);
@@ -112,7 +117,7 @@ test("/GET price history with wrong token return 403", async () => {
 })
 
 test("/GET price history return 200", async () => {
-  db.prepare('INSERT INTO currencies (name, ticker) VALUES (?, ?)').run("Bitcoin", "BTC");
+  db.prepare('INSERT INTO currencies (name, ticker, blockchain) VALUES (?, ?, ?)').run("Bitcoin", "BTC", "bitcoin");
   db.prepare('INSERT INTO prices_history (symbol, price, recorded_at) VALUES (?, ?, ?)').run("BTC", 5000, "2024-01-01T00:00:00.000Z");
   const response = await request(app).get("/price/history?currency=BTC").set("Authorization", "Bearer test-token-123");
   expect(response.status).toBe(200);

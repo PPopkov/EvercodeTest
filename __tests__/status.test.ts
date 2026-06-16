@@ -5,7 +5,7 @@ process.env.AUTH_TOKEN = "test-token-123";
 
 import { CurrencyService } from "../src/types/services/currencyService";
 import { PriceService } from "../src/types/services/priceService";
-import { AddressService } from "../src/types";
+import { AddressService, BlockchainService } from "../src/types";
 import { createApp } from "../src/app";
 
 let app: ReturnType<typeof createApp>;
@@ -26,7 +26,12 @@ const mockAddressService: AddressService = {
   delete: jest.fn(),
 };
 
-app = createApp(mockCurrencyService, mockPriceService, mockAddressService);
+const mockBlockchainService: BlockchainService = {
+  getHeight: jest.fn(),
+  syncHeight: jest.fn().mockResolvedValue(undefined),
+};
+
+app = createApp(mockCurrencyService, mockPriceService, mockAddressService, mockBlockchainService);
 
 
 test("GET /status return ok", async () => {

@@ -1,4 +1,4 @@
-import { Price } from "../entities/price";
+import { Price } from "..";
 
 export interface PriceRepository {
   getAll(): Price[];

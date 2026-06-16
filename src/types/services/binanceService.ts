@@ -1,4 +1,4 @@
-import { BinanceTicker } from "../api/binance";
+import { BinanceTicker } from "..";
 
 export interface BinanceService {
   getByTicker: (ticker: string) => Promise<BinanceTicker[]>;

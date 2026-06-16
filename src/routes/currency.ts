@@ -21,8 +21,8 @@ export function createCurrencyRouter(currencyService: CurrencyService) {
    */
 
   router.get("/", (_, res) => {
-      const result = currencyService.getAll();
-      res.status(200).json(result);
+    const result = currencyService.getAll();
+    res.status(200).json(result);
   });
 
   /**
@@ -74,6 +74,7 @@ export function createCurrencyRouter(currencyService: CurrencyService) {
    *             required:
    *               - name
    *               - ticker
+   *               - blockchain
    *             properties:
    *               name:
    *                 type: string
@@ -81,6 +82,10 @@ export function createCurrencyRouter(currencyService: CurrencyService) {
    *               ticker:
    *                 type: string
    *                 example: BTC
+   *               blockchain:
+   *                 type: string
+   *                 description: Blockchair chain name (lowercase)
+   *                 example: bitcoin
    *     responses:
    *       201:
    *         description: Currency created
@@ -94,7 +99,7 @@ export function createCurrencyRouter(currencyService: CurrencyService) {
 
   router.post("/", (req, res) => {
     const data = req.body;
-    const result = currencyService.create(data.name, data.ticker);
+    const result = currencyService.create(data.name, data.ticker, data.blockchain);
     res.status(201).json(result);
   });
 
@@ -123,6 +128,7 @@ export function createCurrencyRouter(currencyService: CurrencyService) {
    *             required:
    *               - name
    *               - ticker
+   *               - blockchain
    *             properties:
    *               name:
    *                 type: string
@@ -130,6 +136,10 @@ export function createCurrencyRouter(currencyService: CurrencyService) {
    *               ticker:
    *                 type: string
    *                 example: BTC
+   *               blockchain:
+   *                 type: string
+   *                 description: Blockchair chain name (lowercase)
+   *                 example: bitcoin
    *     responses:
    *       200:
    *         description: Currency updated
@@ -144,10 +154,10 @@ export function createCurrencyRouter(currencyService: CurrencyService) {
    */
 
   router.put("/:id", (req, res) => {
-      const id = Number(req.params.id);
-      const data = req.body;
-      const result = currencyService.update(id, data.name, data.ticker);
-      res.status(200).json(result);
+    const id = Number(req.params.id);
+    const data = req.body;
+    const result = currencyService.update(id, data.name, data.ticker, data.blockchain);
+    res.status(200).json(result);
   });
 
   /**
@@ -176,9 +186,9 @@ export function createCurrencyRouter(currencyService: CurrencyService) {
    */
 
   router.delete("/:id", (req, res) => {
-      const id = Number(req.params.id);
-      currencyService.remove(id);
-      res.sendStatus(204);
+    const id = Number(req.params.id);
+    currencyService.remove(id);
+    res.sendStatus(204);
   });
 
 

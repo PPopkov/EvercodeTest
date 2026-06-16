@@ -10,15 +10,15 @@ import { router as statusRoute } from "./routes/status";
 import { createCurrencyRouter } from "./routes/currency";
 import { createPriceRouter } from "./routes/price";
 import { createAddressRouter } from "./routes/address";
+import { createBlockchainRouter } from "./routes/blockchain";
 
-import { CurrencyService } from "./types/services/currencyService";
-import { PriceService } from "./types/services/priceService";
-import { AddressService } from "./types";
+import { CurrencyService, BlockchainService, AddressService, PriceService } from "./types/";
 
 export function createApp(
   currencyService: CurrencyService,
   priceService: PriceService,
-  addressService: AddressService
+  addressService: AddressService,
+  blockchainService: BlockchainService
 ) {
   const app = express();
 
@@ -29,6 +29,7 @@ export function createApp(
   app.use("/currency", createCurrencyRouter(currencyService));
   app.use("/price", createPriceRouter(priceService));
   app.use("/address", createAddressRouter(addressService));
+  app.use("/blockchain", createBlockchainRouter(blockchainService));
   app.use("/status", statusRoute);
 
   app.use(errorHandler);

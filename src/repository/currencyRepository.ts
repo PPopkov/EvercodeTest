@@ -17,11 +17,11 @@ export function createCurrencyRepository(db: DatabaseSync): CurrencyRepository {
       const statement = db.prepare("SELECT * FROM currencies WHERE ticker = ?");
       return statement.get(ticker) as Currency | undefined;
     },
-    createCurrency: (name: string, ticker: string): Currency => {
+    createCurrency: (name: string, ticker: string, blockchain: string): Currency => {
       const statement = db.prepare(
-        "INSERT INTO currencies (name, ticker) VALUES (?, ?)"
+        "INSERT INTO currencies (name, ticker, blockchain) VALUES (?, ?, ?)"
       );
-      const id = statement.run(name, ticker).lastInsertRowid;
+      const id = statement.run(name, ticker, blockchain).lastInsertRowid;
       const currency = self.getById(Number(id));
 
       if (!currency) {
@@ -30,11 +30,11 @@ export function createCurrencyRepository(db: DatabaseSync): CurrencyRepository {
 
       return currency;
     },
-    updateCurrency: (id: number, name: string, ticker: string): Currency => {
+    updateCurrency: (id: number, name: string, ticker: string, blockchain: string): Currency => {
       const statement = db.prepare(
-        "UPDATE currencies SET name = ?, ticker = ? WHERE id = ?"
+        "UPDATE currencies SET name = ?, ticker = ?, blockchain = ? WHERE id = ?"
       );
-      const result = statement.run(name, ticker, Number(id));
+      const result = statement.run(name, ticker, blockchain, Number(id));
       if (result.changes === 0) {
         throw new NotFoundError("There is no such currency");
       }
