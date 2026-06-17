@@ -1,5 +1,4 @@
 import request from "supertest";
-import { DatabaseSync } from "node:sqlite";
 
 process.env.AUTH_TOKEN = "test-token-123";
 

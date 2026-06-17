@@ -1,8 +1,8 @@
-import { DatabaseSync } from "node:sqlite";
+import Database from 'better-sqlite3';
 import { NotFoundError } from "../errors/NotFoundError";
 import { Currency, CurrencyRepository } from "../types";
 
-export function createCurrencyRepository(db: DatabaseSync): CurrencyRepository {
+export function createCurrencyRepository(db: Database.Database): CurrencyRepository {
   const self: CurrencyRepository = {
     getAll: (): Currency[] => {
       const statement = db.prepare("SELECT * FROM currencies");

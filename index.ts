@@ -1,7 +1,6 @@
 import { config } from "./config";
 import { db } from "./src/database/connection";
-import { migrate } from "./src/database/migrate";
-migrate();
+
 import { scheduleService } from "./src/services/schedulerService";
 import { log } from "./src/utils/logger";
 import { createApp } from "./src/app";
@@ -33,6 +32,7 @@ const blockchainService = createBlockchainService(blockchainRepository, currency
 const binanceService = createBinanceService();
 
 const priceService = createPriceService(
+  db,
   currencyRepository,
   priceRepository,
   priceHistoryRepository,

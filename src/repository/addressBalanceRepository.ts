@@ -1,7 +1,7 @@
-import { DatabaseSync } from "node:sqlite";
+import Database from 'better-sqlite3';
 import { AddressBalance, AddressBalanceRepository } from "../types";
 
-export function createAddressBalanceRepository(db: DatabaseSync): AddressBalanceRepository {
+export function createAddressBalanceRepository(db: Database.Database): AddressBalanceRepository {
     const self: AddressBalanceRepository = {
         getByAddress: (address: string) => {
             const statement = db.prepare("SELECT * FROM address_balances WHERE address = ?");

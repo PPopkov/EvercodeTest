@@ -1,7 +1,7 @@
-import { DatabaseSync } from "node:sqlite";
+import Database from 'better-sqlite3';
 import { Price, PriceRepository } from "../types";
 
-export function createPriceRepository(db: DatabaseSync): PriceRepository {
+export function createPriceRepository(db: Database.Database): PriceRepository {
   const self: PriceRepository = {
     getAll: (): Price[] => {
       const statement = db.prepare("SELECT * FROM prices");

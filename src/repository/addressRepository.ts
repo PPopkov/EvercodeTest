@@ -1,9 +1,9 @@
-import { DatabaseSync } from "node:sqlite";
+import Database from 'better-sqlite3';
 import { AddressRepository } from "../types/repositories/addressRepository";
 import { Address } from "../types/entities/address";
 import { NotFoundError } from "../errors";
 
-export function createAddressRepository(db: DatabaseSync): AddressRepository {
+export function createAddressRepository(db: Database.Database): AddressRepository {
     const self: AddressRepository = {
         getAll: (): Address[] => {
             const statement = db.prepare("SELECT * FROM addresses");

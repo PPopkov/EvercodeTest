@@ -1,5 +1,5 @@
 import request from "supertest";
-import { DatabaseSync } from "node:sqlite";
+import Database from 'better-sqlite3';
 
 process.env.AUTH_TOKEN = "test-token-123";
 
@@ -12,10 +12,10 @@ import { PriceService } from "../src/types/services/priceService";
 import { AddressBalanceService, AddressService, BlockchainService } from "../src/types";
 
 let app: ReturnType<typeof createApp>;
-let db: DatabaseSync;
+let db: Database.Database;
 
 beforeEach(() => {
-  db = new DatabaseSync(":memory:");
+  db = new Database(":memory:");
   db.exec(
     `CREATE TABLE currencies (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, ticker TEXT NOT NULL UNIQUE, blockchain TEXT NOT NULL )`
   );
