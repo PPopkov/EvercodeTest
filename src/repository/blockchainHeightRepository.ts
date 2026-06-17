@@ -1,8 +1,8 @@
-import { DatabaseSync } from "node:sqlite";
+import Database from 'better-sqlite3';
 import { BlockchainHeight, BlockchainHeightRepository } from "../types";
 
 export function createBlockchainHeightRepository(
-  db: DatabaseSync
+  db: Database.Database
 ): BlockchainHeightRepository {
   const self: BlockchainHeightRepository = {
     getBySymbol: (symbol: string): BlockchainHeight | undefined => {

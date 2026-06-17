@@ -1,5 +1,5 @@
 import request from "supertest";
-import { DatabaseSync } from "node:sqlite";
+import Database from 'better-sqlite3';
 
 process.env.AUTH_TOKEN = "test-token-123";
 
@@ -11,13 +11,13 @@ import { PriceService } from "../src/types/services/priceService";
 import { AddressBalanceService, BlockchainService } from "../src/types";
 
 let app: ReturnType<typeof createApp>;
-let db: DatabaseSync;
+let db: Database.Database;
 
 const BTC_ADDRESS = "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh";
 const ETH_ADDRESS = "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa";
 
 beforeEach(() => {
-    db = new DatabaseSync(":memory:");
+    db = new Database(":memory:");
     db.exec(
         `CREATE TABLE addresses (id INTEGER PRIMARY KEY AUTOINCREMENT, address TEXT NOT NULL UNIQUE, label TEXT, ticker TEXT NOT NULL)`
     );
