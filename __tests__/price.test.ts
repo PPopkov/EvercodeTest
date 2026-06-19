@@ -36,10 +36,11 @@ beforeEach(() => {
   const currencyService = createCurrencyService(currencyRepository);
 
   const mockBinanceService: BinanceService = {
-    getByTicker: jest.fn().mockResolvedValue([]),
+    getAllPrices: jest.fn().mockResolvedValue([]),
   };
 
   const priceService = createPriceService(
+    db,
     currencyRepository,
     priceRepository,
     priceHistoryRepository,

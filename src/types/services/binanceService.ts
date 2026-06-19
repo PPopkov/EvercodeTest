@@ -1,5 +1,5 @@
 import { BinanceTicker } from "..";
 
 export interface BinanceService {
-  getByTicker: (ticker: string) => Promise<BinanceTicker[]>;
+  getAllPrices: (retries?: number) => Promise<BinanceTicker[]>;
 }

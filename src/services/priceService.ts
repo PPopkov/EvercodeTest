@@ -7,6 +7,7 @@ import Database from 'better-sqlite3';
 import { BinanceService } from "../types/services/binanceService";
 import { PriceService } from "../types/services/priceService";
 import { NotFoundError } from "../errors/NotFoundError";
+
 export function createPriceService(
   db: Database.Database,
   currencyRepository: CurrencyRepository,
@@ -24,14 +25,17 @@ export function createPriceService(
     },
     syncPrices: async () => {
       const currencies = currencyRepository.getAll();
+      const allPrices = await binanceService.getAllPrices();
+
       const saveBoth = db.transaction(
         (symbol: string, price: number, updated_at: string) => {
           priceRepository.savePrice(symbol, price, updated_at);
           priceHistoryRepository.saveHistory(symbol, price, updated_at);
         }
       );
+
       for (const currency of currencies) {
-        const routes = await binanceService.getByTicker(currency.ticker);
+        const routes = allPrices.filter(price => price.symbol.includes(currency.ticker) && Number(price.price) > 0);
         for (const route of routes) {
           saveBoth(route.symbol, Number(route.price), new Date().toISOString());
         }
